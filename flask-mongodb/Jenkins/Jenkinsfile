@@ -32,7 +32,6 @@ spec:
   {
   node(label) {
     stage('Build Kaniko') {
-      git 'https://github.com/jakelima18/test-application.git'
       container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
           /kaniko/executor -f Dockerfile -c `pwd`/flask-mongodb/ --destination=jacksonlima91/backend-flask:$BUILD_NUMBER 
@@ -40,6 +39,23 @@ spec:
       }
     }
    }
+  }
+podTemplate(label: 'kubectl', containers: [
+    containerTemplate(name: 'kubectl', image: 'gcr.io/cloud-builders/kubectl', ttyEnabled: true, command: 'cat')
+  ])
+
+{
+  node('kubectl') { 
+  stage('Deploy Develop') {
+    if (env.BRANCH_NAME.equals('develop')){   
+    container(name: 'kubectl')  {
+     withKubeConfig([credentialsId: 'kubectl', serverUrl: "${URL_CLUSTER_PROD}", contextName: 'jenkins-kubernetes', clusterName: 'jenkins-kubernetes', namespace: 'develop']) {
+      sh 'kubectl set image deployment/backend backend=jacksonlima91/backend-flask:$BUILD_NUMBER'
+    }
+      }
+      }
+  }
+  }
   }
 
   podTemplate(label: 'kubectl', containers: [
