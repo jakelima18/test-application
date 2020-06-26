@@ -1,5 +1,8 @@
 def label = "kaniko-${UUID.randomUUID().toString()}"
 def unit  = "phpunit-${UUID.randomUUID().toString()}"
+URL_CLUSTER_PROD = "https://52.246.117.151:443"
+
+
 podTemplate(name: 'kaniko', label: label, yaml: """
 kind: Pod
 metadata:
@@ -38,44 +41,7 @@ spec:
     }
    }
   }
-podTemplate(name: 'phpunit', label: unit, yaml: """
-kind: Pod
-metadata:
-  name: two-containers
-spec:
-  containers:
-  - name: backend
-    image: jacksonlima91/forum-app:$BUILD_NUMBER
 
-  - name: mysql
-    image: mysql:5.7
-    args:
-        - "--ignore-db-dir=lost+found"
-    env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: schoolofnet
-        - name: MYSQL_PASSWORD
-          value: secret
-        - name: MYSQL_DATABASE
-          value: homestead
-        - name: MYSQL_USER
-          value: laravel_user
-    ports:
-    - containerPort: 3306
-      name: mysql         
-"""
-  ) 
-
-  {
-  node(unit) {
-    stage('Unit Test') {
-      container(name: 'backend', shell: '/bin/bash') {
-          sh '/var/www/forum/waitforit.sh localhost:3306 -t 90'
-          sh '/var/www/forum/vendor/bin/phpunit -c /var/www/forum/phpunit.xml'
-      }
-    }
-  }
-  }
   podTemplate(label: 'kubectl', containers: [
     containerTemplate(name: 'kubectl', image: 'gcr.io/cloud-builders/kubectl', ttyEnabled: true, command: 'cat')
   ])
@@ -83,8 +49,8 @@ spec:
   node('kubectl') {
   stage('Deploy') {
     container(name: 'kubectl')  {
-     withKubeConfig([credentialsId: 'kubectl', serverUrl: 'https://jenkins-dns-3cf1a3b2.hcp.eastus.azmk8s.io:443', contextName: 'jenkins-kubernetes', clusterName: 'jenkins-kubernetes']) {
-      sh 'kubectl set image deployment/forum-app backend=jacksonlima91/forum-app:$BUILD_NUMBER -n develop'
+     withKubeConfig([credentialsId: 'kubectl', serverUrl: '${URL_CLUSTER_PROD', contextName: 'jenkins-kubernetes', clusterName: 'jenkins-kubernetes', namespace: 'production']) {
+      sh 'kubectl set image deployment/backend backend=jacksonlima91/backend-flex:$BUILD_NUMBER'
     }
       }
       }
