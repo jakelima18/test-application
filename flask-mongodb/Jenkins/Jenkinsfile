@@ -49,7 +49,7 @@ spec:
   node('kubectl') {
   stage('Deploy') {
     container(name: 'kubectl')  {
-     withKubeConfig([credentialsId: 'kubectl', serverUrl: '${URL_CLUSTER_PROD', contextName: 'jenkins-kubernetes', clusterName: 'jenkins-kubernetes', namespace: 'production']) {
+     withKubeConfig([credentialsId: 'kubectl', serverUrl: "${URL_CLUSTER_PROD}", contextName: 'jenkins-kubernetes', clusterName: 'jenkins-kubernetes', namespace: 'production']) {
       sh 'kubectl set image deployment/backend backend=jacksonlima91/backend-flask:$BUILD_NUMBER'
     }
       }
