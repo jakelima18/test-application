@@ -47,7 +47,7 @@ spec:
   ])
   {
   node('kubectl') {
-  if (env.BRANCH_NAME == 'master'){    
+  if (env.BRANCH_NAME.equals('master')){    
   stage('Deploy Prod') {
     container(name: 'kubectl')  {
      withKubeConfig([credentialsId: 'kubectl', serverUrl: "${URL_CLUSTER_PROD}", contextName: 'jenkins-kubernetes', clusterName: 'jenkins-kubernetes', namespace: 'production']) {
