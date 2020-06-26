@@ -31,6 +31,13 @@ spec:
   ) 
   {
   node(label) {
+    checkout([
+         $class: 'GitSCM',
+         branches: scm.branches,
+         doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+         extensions: scm.extensions,
+         userRemoteConfigs: scm.userRemoteConfigs
+    ])  
     stage('Build Kaniko') {
       container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
