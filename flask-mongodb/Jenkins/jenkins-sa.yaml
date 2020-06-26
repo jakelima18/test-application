@@ -8,7 +8,6 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: jenkins-deploy
-  namespace: prod
 rules:
 - apiGroups:
   - ""
@@ -88,7 +87,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: jenkins-deploy
-  namespace: prod
+  namespace: default
 roleRef:
   kind: ClusterRole
   name: jenkins-deploy
