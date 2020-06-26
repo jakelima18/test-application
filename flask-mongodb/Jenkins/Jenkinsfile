@@ -48,7 +48,7 @@ spec:
   {
   node('kubectl') {
   stage('Deploy') {
-    if (env.BRANCH_NAME = 'master'){
+    if (env.BRANCH_NAME == 'master'){
     container(name: 'kubectl')  {
      withKubeConfig([credentialsId: 'kubectl', serverUrl: "${URL_CLUSTER_PROD}", contextName: 'jenkins-kubernetes', clusterName: 'jenkins-kubernetes', namespace: 'production']) {
       sh 'kubectl set image deployment/backend backend=jacksonlima91/backend-flask:$BUILD_NUMBER'
