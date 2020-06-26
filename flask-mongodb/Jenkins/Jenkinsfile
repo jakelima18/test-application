@@ -32,7 +32,7 @@ spec:
       git 'https://github.com/jakelima18/test-application.git'
       container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
-          /kaniko/executor -f Dockerfile -c `pwd`/flask-mongodb/Dockerfile --destination=jacksonlima91/backend-flask:$BUILD_NUMBER 
+          /kaniko/executor -f Dockerfile -c `pwd`/flask-mongodb/ --destination=jacksonlima91/backend-flask:$BUILD_NUMBER 
           '''
       }
     }
