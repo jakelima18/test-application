@@ -29,10 +29,10 @@ spec:
   {
   node(label) {
     stage('Build Kaniko') {
-      git 'https://github.com/jakelima18/jenkins-kubernetes.git'
+      git 'https://github.com/jakelima18/test-application.git'
       container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
-          /kaniko/executor -f Dockerfile -c `pwd` --destination=jacksonlima91/forum-app:$BUILD_NUMBER 
+          /kaniko/executor -f Dockerfile -c `pwd` --destination=jacksonlima91/backend-flask:$BUILD_NUMBER 
           '''
       }
     }
